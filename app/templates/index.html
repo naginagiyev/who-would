@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Create a room</h2>
+<form method="post" action="/rooms">
+    <input name="name" placeholder="Your name" required>
+    <button>Create</button>
+</form>
+<h2>Join a room</h2>
+<form method="post" action="/join">
+    <input name="code" placeholder="Room code" required>
+    <input name="name" placeholder="Your name" required>
+    <button>Join</button>
+</form>
+{% endblock %}

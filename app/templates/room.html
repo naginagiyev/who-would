@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Room {{ code }}</h2>
+<p>Share this code with your friends.</p>
+<ul>
+    {% for id, name in players %}
+    <li>{{ name }}{% if loop.first %} (host){% endif %}{% if id == player_id %} (you){% endif %}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
