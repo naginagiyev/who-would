@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Create a room</h2>
-<form method="post" action="/rooms">
-    <input name="name" placeholder="Your name" required>
-    <button>Create</button>
+<p class="tagline">Ask a question. Vote for a friend. Laugh at the results.</p>
+<form class="panel" method="post" action="/rooms">
+    <h2>🎉 New game</h2>
+    <input name="name" placeholder="Your name" maxlength="20" required>
+    <button class="primary">Create room</button>
 </form>
-<h2>Join a room</h2>
-<form method="post" action="/join">
-    <input name="code" placeholder="Room code" required>
-    <input name="name" placeholder="Your name" required>
-    <button>Join</button>
+<div class="divider">or</div>
+<form class="panel" method="post" action="/join">
+    <h2>🚪 Join a game</h2>
+    <input class="code-input" name="code" placeholder="Room code" maxlength="4" required>
+    <input name="name" placeholder="Your name" maxlength="20" required>
+    <button class="primary">Join</button>
 </form>
 {% endblock %}

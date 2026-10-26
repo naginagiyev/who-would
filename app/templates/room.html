@@ -1,55 +1,83 @@
 {% extends "base.html" %}
 {% block content %}
 {% set is_host = players[0][0] == player_id %}
-<h2>Room {{ code }}</h2>
-<p>Share this code with your friends.</p>
-<ul>
+<div class="code-box">
+    <span>Room code</span>
+    <strong class="code">{{ code }}</strong>
+</div>
+<ul class="players">
     {% for id, name in players %}
-    <li>{{ name }}{% if loop.first %} (host){% endif %}{% if id == player_id %} (you){% endif %}</li>
+    <li class="chip{% if id == player_id %} me{% endif %}">
+        <span class="avatar" style="background: hsl({{ id * 67 % 360 }} 70% 55%)">{{ name[0]|upper }}</span>
+        {{ name }}
+        {% if loop.first %}<small>host</small>{% endif %}
+        {% if id == player_id %}<small>you</small>{% endif %}
+    </li>
     {% endfor %}
 </ul>
 {% if question %}
-<h3>{{ question[1] }}</h3>
+<div class="question">{{ question[1] }}</div>
 {% if results %}
-<ul>
-    {% for name, count in results %}
-    <li>{{ name }}: {{ count }}{% if count > 0 and count == results[0][1] %} (winner){% endif %}</li>
+<ul class="results">
+    {% for id, name, count in results %}
+    <li class="result{% if count > 0 and count == results[0][2] %} winner{% endif %}">
+        <span class="avatar" style="background: hsl({{ id * 67 % 360 }} 70% 55%)">{{ name[0]|upper }}</span>
+        <span>{{ name }}{% if count > 0 and count == results[0][2] %} 👑{% endif %}</span>
+        <span>{{ count }}</span>
+        <div class="bar"><div style="width: {{ count * 100 // (voters|length or 1) }}%"></div></div>
+    </li>
     {% endfor %}
 </ul>
 {% else %}
 {% if player_id in voters %}
-<p>You voted. Waiting for the host to reveal.</p>
+<p class="waiting">✅ You voted! Waiting for the host to reveal...</p>
 {% else %}
-{% for id, name in players %}
-{% if id != player_id %}
-<form method="post" action="/questions/{{ question[0] }}/votes">
-    <input type="hidden" name="voter_id" value="{{ player_id }}">
-    <input type="hidden" name="target_id" value="{{ id }}">
-    <button>{{ name }}</button>
-</form>
+<div class="grid">
+    {% for id, name in players %}
+    {% if id != player_id %}
+    <form method="post" action="/questions/{{ question[0] }}/votes">
+        <input type="hidden" name="voter_id" value="{{ player_id }}">
+        <input type="hidden" name="target_id" value="{{ id }}">
+        <button class="vote">
+            <span class="avatar" style="background: hsl({{ id * 67 % 360 }} 70% 55%)">{{ name[0]|upper }}</span>
+            {{ name }}
+        </button>
+    </form>
+    {% endif %}
+    {% endfor %}
+</div>
 {% endif %}
-{% endfor %}
-{% endif %}
-<p>{{ voters|length }} of {{ players|length }} voted.</p>
+<div class="progress"><div style="width: {{ voters|length * 100 // players|length }}%"></div></div>
+<p class="muted">{{ voters|length }} of {{ players|length }} voted</p>
 {% if is_host %}
 <form method="post" action="/questions/{{ question[0] }}/reveal">
     <input type="hidden" name="player_id" value="{{ player_id }}">
-    <button>Reveal</button>
+    <button class="primary">Reveal results 🎉</button>
 </form>
 {% endif %}
 {% endif %}
+{% elif not is_host %}
+<p class="waiting">⏳ Waiting for the host to ask a question...</p>
 {% endif %}
 {% if is_host %}
-<h3>Ask a question</h3>
-<form method="post" action="/rooms/{{ code }}/questions">
-    <input type="hidden" name="player_id" value="{{ player_id }}">
-    <input name="text" placeholder="Leave empty for a random question">
-    <button>Ask</button>
-</form>
+<div class="host">
+    <h3>🎤 Ask a question</h3>
+    <form method="post" action="/rooms/{{ code }}/questions">
+        <input type="hidden" name="player_id" value="{{ player_id }}">
+        <input name="text" placeholder="Leave empty for a random question">
+        <button class="primary">Ask 🎲</button>
+    </form>
+</div>
 {% endif %}
+{% endblock %}
+{% block scripts %}
 <script>
-    setInterval(() => {
-        if (document.activeElement.tagName !== "INPUT") location.reload();
-    }, 3000);
+    setInterval(async () => {
+        if (document.activeElement.tagName === "INPUT") return;
+        const html = await (await fetch(location.href)).text();
+        const next = new DOMParser().parseFromString(html, "text/html").getElementById("game");
+        const game = document.getElementById("game");
+        if (next && next.innerHTML !== game.innerHTML) game.innerHTML = next.innerHTML;
+    }, 2000);
 </script>
 {% endblock %}

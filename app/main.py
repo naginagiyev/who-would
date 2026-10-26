@@ -79,7 +79,7 @@ def room_page(request: Request, code: str, player_id: int):
             voters = [row[0] for row in conn.execute(query, (question[0],))]
         if question and question[2]:
             query = (
-                "SELECT p.name, COUNT(v.id) FROM players p LEFT JOIN votes v "
+                "SELECT p.id, p.name, COUNT(v.id) FROM players p LEFT JOIN votes v "
                 "ON v.target_id = p.id AND v.question_id = %s "
                 "WHERE p.room_code = %s GROUP BY p.id ORDER BY COUNT(v.id) DESC, p.id"
             )
