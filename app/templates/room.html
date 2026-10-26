@@ -47,4 +47,9 @@
     <button>Ask</button>
 </form>
 {% endif %}
+<script>
+    setInterval(() => {
+        if (document.activeElement.tagName !== "INPUT") location.reload();
+    }, 3000);
+</script>
 {% endblock %}

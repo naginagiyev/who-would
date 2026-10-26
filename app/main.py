@@ -37,6 +37,15 @@ def add_player(conn, code, name):
     player_id = conn.execute(query, (code, name)).fetchone()[0]
     return RedirectResponse(f"/rooms/{code}?player_id={player_id}", status_code=303)
 
+@app.get("/health")
+def health():
+    try:
+        with psycopg.connect(database_url, connect_timeout=3) as conn:
+            conn.execute("SELECT 1")
+    except psycopg.Error:
+        raise HTTPException(500, "Database unreachable")
+    return {"status": "ok"}
+
 @app.get("/")
 def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
