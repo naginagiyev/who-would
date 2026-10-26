@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% set is_host = players[0][0] == player_id %}
 <h2>Room {{ code }}</h2>
 <p>Share this code with your friends.</p>
 <ul>
@@ -7,4 +8,43 @@
     <li>{{ name }}{% if loop.first %} (host){% endif %}{% if id == player_id %} (you){% endif %}</li>
     {% endfor %}
 </ul>
+{% if question %}
+<h3>{{ question[1] }}</h3>
+{% if results %}
+<ul>
+    {% for name, count in results %}
+    <li>{{ name }}: {{ count }}{% if count > 0 and count == results[0][1] %} (winner){% endif %}</li>
+    {% endfor %}
+</ul>
+{% else %}
+{% if player_id in voters %}
+<p>You voted. Waiting for the host to reveal.</p>
+{% else %}
+{% for id, name in players %}
+{% if id != player_id %}
+<form method="post" action="/questions/{{ question[0] }}/votes">
+    <input type="hidden" name="voter_id" value="{{ player_id }}">
+    <input type="hidden" name="target_id" value="{{ id }}">
+    <button>{{ name }}</button>
+</form>
+{% endif %}
+{% endfor %}
+{% endif %}
+<p>{{ voters|length }} of {{ players|length }} voted.</p>
+{% if is_host %}
+<form method="post" action="/questions/{{ question[0] }}/reveal">
+    <input type="hidden" name="player_id" value="{{ player_id }}">
+    <button>Reveal</button>
+</form>
+{% endif %}
+{% endif %}
+{% endif %}
+{% if is_host %}
+<h3>Ask a question</h3>
+<form method="post" action="/rooms/{{ code }}/questions">
+    <input type="hidden" name="player_id" value="{{ player_id }}">
+    <input name="text" placeholder="Leave empty for a random question">
+    <button>Ask</button>
+</form>
+{% endif %}
 {% endblock %}
