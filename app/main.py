@@ -44,7 +44,7 @@ def health():
             conn.execute("SELECT 1")
     except psycopg.Error:
         raise HTTPException(500, "Database unreachable")
-    return {"status": "okay"}
+    return {"status": "ok"}
 
 @app.get("/")
 def index(request: Request):
