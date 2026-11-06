@@ -116,3 +116,23 @@ resource "azurerm_linux_virtual_machine" "main" {
     version   = "latest"
   }
 }
+
+resource "azurerm_user_assigned_identity" "deploy" {
+  name                = "who-would-deploy"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+}
+
+resource "azurerm_federated_identity_credential" "github" {
+  name                      = "github-main"
+  user_assigned_identity_id = azurerm_user_assigned_identity.deploy.id
+  issuer                    = "https://token.actions.githubusercontent.com"
+  subject                   = "repo:${var.github_repo}:ref:refs/heads/main"
+  audience                  = ["api://AzureADTokenExchange"]
+}
+
+resource "azurerm_role_assignment" "deploy" {
+  scope                = azurerm_linux_virtual_machine.main.id
+  role_definition_name = "Virtual Machine Contributor"
+  principal_id         = azurerm_user_assigned_identity.deploy.principal_id
+}

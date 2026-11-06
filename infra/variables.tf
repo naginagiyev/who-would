@@ -20,3 +20,8 @@ variable "ssh_public_key_path" {
   type    = string
   default = "~/.ssh/who-would.pub"
 }
+
+variable "github_repo" {
+  type    = string
+  default = "naginagiyev/who-would"
+}
