@@ -23,5 +23,5 @@ variable "ssh_public_key_path" {
 
 variable "github_repo" {
   type    = string
-  default = "naginagiyev/who-would"
+  default = "naginagiyev@148803359/who-would@1429557749"
 }
