@@ -44,3 +44,37 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
             ghcr.io/${{ github.repository }}:latest
+
+  deploy:
+    needs: build-test
+    runs-on: ubuntu-latest
+    concurrency: deploy
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      RESOURCE_GROUP: who-would-rg
+      VM_NAME: who-would-vm
+      APP_URL: http://68.210.36.252
+    steps:
+      - uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy on the VM
+        run: |
+          az vm run-command invoke \
+            --resource-group $RESOURCE_GROUP \
+            --name $VM_NAME \
+            --command-id RunShellScript \
+            --scripts "su - azureuser -c 'cd /opt/who-would && git pull -q && export IMAGE_TAG=${{ github.sha }} && docker compose pull web && docker compose up -d && docker compose ps web --format {{.Image}}'" \
+            --query "value[0].message" -o tsv | tee deploy.log
+          grep -q "${{ github.sha }}" deploy.log
+      - name: Verify
+        run: |
+          for i in $(seq 1 10); do
+            curl --fail --silent $APP_URL/health && exit 0
+            sleep 5
+          done
+          exit 1

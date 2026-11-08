@@ -1,5 +1,6 @@
 services:
   web:
+    image: ghcr.io/naginagiyev/who-would:${IMAGE_TAG:-latest}
     build: .
     ports:
       - "80:8000"
