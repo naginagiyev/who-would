@@ -66,7 +66,7 @@ resource "azurerm_network_security_group" "main" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = var.ssh_source_ip
+    source_address_prefixes    = var.ssh_source_ips
     destination_address_prefix = "*"
   }
 }

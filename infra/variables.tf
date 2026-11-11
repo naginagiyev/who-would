@@ -7,8 +7,8 @@ variable "location" {
   default = "austriaeast"
 }
 
-variable "ssh_source_ip" {
-  type = string
+variable "ssh_source_ips" {
+  type = list(string)
 }
 
 variable "vm_size" {
