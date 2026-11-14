@@ -1,0 +1,28 @@
+azurerm_resource_group.main: Creating...
+azurerm_resource_group.main: Still creating... [00m10s elapsed]
+azurerm_resource_group.main: Still creating... [00m20s elapsed]
+azurerm_resource_group.main: Creation complete after 23s [id=/subscriptions/<subscription-id>/resourceGroups/who-would-rg]
+azurerm_virtual_network.main: Creating...
+azurerm_public_ip.main: Creating...
+azurerm_network_security_group.main: Creating...
+azurerm_network_security_group.main: Creation complete after 3s [id=/subscriptions/<subscription-id>/resourceGroups/who-would-rg/providers/Microsoft.Network/networkSecurityGroups/who-would-nsg]
+azurerm_public_ip.main: Creation complete after 4s [id=/subscriptions/<subscription-id>/resourceGroups/who-would-rg/providers/Microsoft.Network/publicIPAddresses/who-would-ip]
+azurerm_virtual_network.main: Creation complete after 6s [id=/subscriptions/<subscription-id>/resourceGroups/who-would-rg/providers/Microsoft.Network/virtualNetworks/who-would-vnet]
+azurerm_subnet.main: Creating...
+azurerm_subnet.main: Creation complete after 6s [id=/subscriptions/<subscription-id>/resourceGroups/who-would-rg/providers/Microsoft.Network/virtualNetworks/who-would-vnet/subnets/who-would-subnet]
+azurerm_subnet_network_security_group_association.main: Creating...
+azurerm_network_interface.main: Creating...
+azurerm_subnet_network_security_group_association.main: Creation complete after 5s [id=/subscriptions/<subscription-id>/resourceGroups/who-would-rg/providers/Microsoft.Network/virtualNetworks/who-would-vnet/subnets/who-would-subnet]
+azurerm_network_interface.main: Creation complete after 7s [id=/subscriptions/<subscription-id>/resourceGroups/who-would-rg/providers/Microsoft.Network/networkInterfaces/who-would-nic]
+azurerm_linux_virtual_machine.main: Creating...
+azurerm_linux_virtual_machine.main: Still creating... [00m10s elapsed]
+azurerm_linux_virtual_machine.main: Still creating... [00m20s elapsed]
+azurerm_linux_virtual_machine.main: Still creating... [00m30s elapsed]
+azurerm_linux_virtual_machine.main: Still creating... [00m40s elapsed]
+azurerm_linux_virtual_machine.main: Creation complete after 48s [id=/subscriptions/<subscription-id>/resourceGroups/who-would-rg/providers/Microsoft.Compute/virtualMachines/who-would-vm]
+
+Apply complete! Resources: 8 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+public_ip = "68.210.36.252"
